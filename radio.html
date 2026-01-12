@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <title>Tofu Radio</title>
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Electrolize&family=Noto+Sans+JP:wght@100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+
+body {
+  font-family: "Electrolize", sans-serif;
+  padding-top: 1%;
+  text-align: center;
+  margin: auto;
+  background-image: url("radio-bg.jpg");
+  background-size: cover;
+  color: white;
+}
+    </style>
+  </head>
+  <body>
+    <h1>Tofu Aottg Radio</h1>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <div id="player"></div>
+    <br>
+    <br>
+    <p id="empty" hidden=true>Queue is empty!</p>
+    <script>
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '390',
+          width: '640',
+          videoId: 'dQw4w9WgXcQ'
+        });
+      }
+      
+      let last_video_id;
+      setInterval(async () => {
+        const { current_time, video_id } = await(await fetch("https://api.woksan.uk/api/music2/status")).json();
+        if (!video_id) {
+          player.stopVideo();
+          document.getElementById("empty").hidden = false;
+          return;
+        } else if (player.getPlayerState() != 1) {
+          player.playVideo();
+        }
+        document.getElementById("empty").hidden = true;
+        
+        if (video_id !== last_video_id)
+          player.loadVideoById(video_id);
+        
+        if (Math.abs(current_time - player.getCurrentTime()) > 5)
+          player.seekTo(current_time);
+        
+        last_video_id = video_id;
+      }, 1000);
+    </script>
+  </body>
+</html>
