@@ -34,7 +34,7 @@ body {
       
       let last_video_id;
       setInterval(async () => {
-        const { current_time, video_id } = await(await fetch("https://api.woksan.uk/api/music2/status")).json();
+        const { current_time, video_id } = await(await fetch("https://api.woksan.uk/api/music/status")).json();
         if (!video_id) {
           player.stopVideo();
           document.getElementById("empty").hidden = false;
